@@ -1,12 +1,12 @@
 import mysql.connector as mysql
 import os
-# from dotenv import load_dotenv
-# from pathlib import Path  
+from dotenv import load_dotenv
+from pathlib import Path  
 
 
 # set path to env file
-# env_path = Path('.') / '.env'
-# load_dotenv(dotenv_path=env_path)
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 
 
@@ -14,7 +14,7 @@ class DataBase(object):
     def __init__(self):
         try:
             self.connection = mysql.connect(
-                host=os.getenv('HOST'),
+                host=os.getenv('MYSQL_HOST'),
                 user=os.getenv('MYSQL_USERNAME'),
                 passwd=os.getenv('MYSQL_PASSWORD'),
                 database=os.getenv('DB')
