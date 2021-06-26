@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
-from validations import create_user_validations, write_message_validations
+from validations import user_validations, message_validations
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -38,7 +38,7 @@ returns user created or error message
 @app.route('/users/', methods=['POST'])
 def create_user():
     data = request.get_json()
-    error_message = create_user_validations(data)
+    error_message = user_validations(data)
     if error_message:
         return jsonify({"Message": error_message}), 400
 
@@ -143,7 +143,7 @@ send message
 def write_message():
     user_id = get_jwt_identity()
     data = request.get_json()
-    error_message = write_message_validations(data)
+    error_message = message_validations(data)
     if error_message:
         return jsonify({"Message": error_message}), 400
  

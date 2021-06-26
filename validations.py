@@ -1,6 +1,6 @@
 
 
-def create_user_validations(data):
+def user_validations(data):
     if data.get('username') is None:
         return "Username is required!"
 
@@ -12,9 +12,7 @@ def create_user_validations(data):
 
     return
 
-def write_message_validations(data):
-    if data is None:
-        return "Missing parameters!"
+def message_validations(data):
     if data.get('sender') is None:
         return "Sender is required!"
 
