@@ -74,6 +74,7 @@ def login():
         return jsonify({"Message" : "Username or password is missing!"}), 400
 
     user = db.get_user(username)
+    print(user)
     if not user:
         return jsonify({"Message" : "Incorrect username!"}), 401
 
