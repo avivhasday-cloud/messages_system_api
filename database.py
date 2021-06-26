@@ -1,12 +1,12 @@
 import mysql.connector as mysql
 import os
-from dotenv import load_dotenv
-from pathlib import Path  
+# from dotenv import load_dotenv
+# from pathlib import Path  
 
 
 # set path to env file
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+# env_path = Path('.') / '.env'
+# load_dotenv(dotenv_path=env_path)
 
 
 
