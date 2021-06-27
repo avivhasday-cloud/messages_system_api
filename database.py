@@ -19,6 +19,7 @@ class DataBase(object):
                 passwd=os.getenv('MYSQL_PASSWORD'),
                 database=os.getenv('DB')
             )
+            self.cursor = self.connection.cursor()
             
         except mysql.Error as err:
             print(err.msg)
