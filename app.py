@@ -1,9 +1,6 @@
 from flask import Flask, jsonify, request
 from database import DataBase 
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 from validations import user_validations, message_validations
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,9 +14,10 @@ import os
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-
+# init
 app = Flask(__name__)
 db = DataBase()
+# get config from env variables
 app.config["JWT_SECRET_KEY"] = os.getenv('SECRET_KEY')
 jwt = JWTManager(app)
 salt = "1Ha7"
@@ -153,7 +151,7 @@ def write_message():
 
 """
 *****************************************************
-Function: write_message
+Function: read_message
 Parameters: message id
 Token format: Bearer + access_token
 
