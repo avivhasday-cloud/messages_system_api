@@ -1,7 +1,9 @@
 import mysql.connector as mysql
 import os
 from dotenv import load_dotenv
-from pathlib import Path  
+from pathlib import Path
+
+from mysql.connector import cursor  
 
 
 # set path to env file
@@ -17,7 +19,8 @@ class DataBase(object):
                 host=os.getenv('MYSQL_HOST'),
                 user=os.getenv('MYSQL_USERNAME'),
                 passwd=os.getenv('MYSQL_PASSWORD'),
-                database=os.getenv('DB')
+                database=os.getenv('DB'),
+    
             )
             self.cursor = self.connection.cursor()
             
@@ -27,6 +30,18 @@ class DataBase(object):
 
     def close_connection(self):
         self.connection.Close()
+    
+    def reconnect(self):
+        try:
+            self.__init__()
+            cursor = self.connection.cursor()
+            return cursor
+        except:
+            return {"Message": "General Error"}
+
+
+            
+
 
     def create_user(self, username, email, password):
         try:
@@ -35,6 +50,9 @@ class DataBase(object):
             self.cursor.execute(query, params)
             self.connection.commit()
             return {"Message": "User created"}
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.create_user(username, email, password)
 
         except mysql.Error as err:
             print(err.msg)
@@ -55,6 +73,10 @@ class DataBase(object):
                 "password":result[3]
             }
             return user_object
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.get_user(username)
+
 
         except mysql.Error as err:
             print(err.msg)
@@ -72,7 +94,9 @@ class DataBase(object):
                 message = dict(zip(columns, row))
                 output.append(message)
             return {"data": output}
-
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.get_all_messages_for_user(user_id)
         except mysql.Error as err:
             print(err.msg)
             return {"Message": "General Error"}
@@ -90,7 +114,9 @@ class DataBase(object):
                 message = dict(zip(columns, row))
                 output.append(message)
             return {"data": output}
-
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.get_all_unread_messages_for_user(user_id)
         except mysql.Error as err:
             print(err.msg)
             return {"Message": "General Error"}
@@ -105,7 +131,9 @@ class DataBase(object):
             self.connection.commit()
             
             return {"Message": "Message sent!"}
-
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.write_message(data, user_id)
         except mysql.Error as err:
             print(err.msg)
             return {"Message": "General Error"}
@@ -120,6 +148,9 @@ class DataBase(object):
             updated_row = self.get_message(id)
             return {"Data": updated_row}
             
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.read_message(id)
 
         except mysql.Error as err:
             print(err.msg)
@@ -135,6 +166,9 @@ class DataBase(object):
             message = dict(zip(columns, result))
             return message
 
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.get_message(id)
         except mysql.Error as err:
             print(err.msg)
             return {"Message": "General Error"}
@@ -148,6 +182,9 @@ class DataBase(object):
             self.connection.commit()
             return {"Message": "Message deleted"}
 
+        except mysql.OperationalError as err:
+            self.cursor = self.reconnect()
+            self.delete_message(id, user_id)
         except mysql.Error as err:
             print(err.msg)
             return {"Message": "General Error"}
