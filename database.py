@@ -19,10 +19,25 @@ class DataBase(object):
                 passwd=os.getenv('MYSQL_PASSWORD'),
                 database=os.getenv('DB')
             )
-            print('connection established')
-            self.cursor = self.connection.cursor()
+            if self.connection.is_connected():
+                db_Info = self.connection.get_server_info()
+                print("Connected to MySQL database... MySQL Server version on ", db_Info)
+
+                self.cursor = self.connection.cursor()
+                # global connection timeout arguments
+                global_connect_timeout = 'SET GLOBAL connect_timeout=180'
+                global_wait_timeout = 'SET GLOBAL connect_timeout=180'
+                global_interactive_timeout = 'SET GLOBAL connect_timeout=180'
+
+                self.cursor.execute(global_connect_timeout)
+                self.cursor.execute(global_wait_timeout)
+                self.cursor.execute(global_interactive_timeout)
+
+                self.connection.commit()
+            
         except mysql.Error as err:
             print(err.msg)
+            return err.msg
 
     def close_connection(self):
         self.connection.Close()
@@ -152,6 +167,6 @@ class DataBase(object):
             return {"Message": "General Error"}
 
 
-
+    
                
 
